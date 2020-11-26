@@ -1,44 +1,47 @@
-import React from "react"
+import React, { useState } from "react"
 import Result from "./components/Result"
-import Button from "./components/Button"
+import Function from "./components/Functions"
+import MathOperations from "./components/MathOperations"
+import Numbers from "./components/Numbers"
 
 import "./App.css"
 
+//React es basado en componentes, así que no es correcto usar un jsx para hacer múltiples funciones, aunque puede admitirlo.
+
 //Función flecha, es similar a expresión lambda en C#
 const App = () => {
-    const clickHandlerFunction=(text)=> {
-        console.log("button.clickHandler",text)
-    }
+
+    //Array destructuring
+    //1ra posición, el valor actual,2da posición, la función para cambiar el valor actual.
+    //por convención, el método se debería de llamar set+NombreVariable. En este caso: setStack
+    const [stack,setStack] = useState("")
+    
     //Lo que la función ejecuta
     console.log("Renderización principal de app")
     return (
-    <main className="react-calculator">
-        <Result/>
-        <div className="numbers">
-            <Button text="1" clickHandler={clickHandlerFunction} />
-            <button>2</button>
-            <button>3</button>
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            <button>0</button>
-        </div>
-        <div className="functions">
-            <button>C</button>
-            <button>R</button>
-        </div>
-        <div className="math-operations">
-            <button>+</button>
-            <button>-</button>
-            <button>*</button>
-            <button>/</button>
-            <button>=</button>
-        </div>
-    </main>)
+        <main className="react-calculator">
+            <Result value={stack}/>
+            <Numbers
+                onClickNumber={number =>{
+                    console.log("Number:", number)
+                    setStack(stack+number)
+                }}
+            />
+            <Function
+                onContentClear={clear =>
+                    console.log("content clear")
+                }
+                onDelete={deleted =>
+                    console.log("onDelete")
+                }
+            />
+            <MathOperations
+                onClickOperation={operation =>
+                    console.log("Operacion:", operation)}
+                onClickEqual={equal =>
+                    console.log("Igual: ", equal)}
+            />
+        </main>)
 }
-
 //Exportación
 export default App
