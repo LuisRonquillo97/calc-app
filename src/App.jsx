@@ -1,4 +1,6 @@
+/* eslint no-eval: 0*/
 import React, { useState } from "react"
+import words from "lodash.words"
 import Result from "./components/Result"
 import Function from "./components/Functions"
 import MathOperations from "./components/MathOperations"
@@ -15,31 +17,37 @@ const App = () => {
     //1ra posición, el valor actual,2da posición, la función para cambiar el valor actual.
     //por convención, el método se debería de llamar set+NombreVariable. En este caso: setStack
     const [stack,setStack] = useState("")
-    
+    const items=words(stack, /[^-^+^*^/]+/g)
     //Lo que la función ejecuta
-    console.log("Renderización principal de app")
+    const value= items.length > 0? items[items.length-1]:"0"
     return (
         <main className="react-calculator">
-            <Result value={stack}/>
+            <Result value={value}/>
             <Numbers
                 onClickNumber={number =>{
-                    console.log("Number:", number)
-                    setStack(stack+number)
+                    //ECMAScript 6, template literals
+                    setStack(`${stack}${number}`)
                 }}
             />
             <Function
                 onContentClear={clear =>
-                    console.log("content clear")
+                    setStack("")
                 }
-                onDelete={deleted =>
-                    console.log("onDelete")
-                }
+                onDelete={deleted =>{
+                    if(stack.length>0){
+                        const newStack= stack.substring(0,stack.length-1)
+                        setStack(newStack)
+                    }
+                    
+                }}
             />
             <MathOperations
-                onClickOperation={operation =>
-                    console.log("Operacion:", operation)}
-                onClickEqual={equal =>
-                    console.log("Igual: ", equal)}
+                onClickOperation={operation =>(
+                    setStack(`${stack}${operation}`)
+                )}
+                onClickEqual={equal =>(
+                    setStack(eval(stack).toString())
+                )}
             />
         </main>)
 }
